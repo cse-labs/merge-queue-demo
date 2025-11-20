@@ -8,11 +8,6 @@ This folder contains Proof of Concept files to demonstrate GitHub Merge Queues.
 - `test.sh`: A script that simulates test execution with various modes (`pass`, `fail`, `flaky`, `sleep`).
 - `version.txt`: A simple text file used to demonstrate semantic conflicts.
 
-## Usage
-
-1. **Setup**:
-   - Ensure `test.sh` is executable (`chmod +x scripts/test.sh`).
-
 ## Scenarios
 
 ### 1. Happy Path
