@@ -5,7 +5,6 @@ on:
   pull_request:
     branches: [main]
   merge_group:
-    branches: [main]
 
 jobs:
   unit-test:
@@ -13,7 +12,7 @@ jobs:
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
       - name: Run Unit Test
-        run: ./scripts/test.sh fail
+        run: ./scripts/test.sh
 
   # Scenario: Job that only runs in the Merge Queue (e.g., expensive integration tests)
   merge-queue-exclusive:
@@ -22,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
       - name: Run Expensive Test
-        run: ./scripts/test.sh sleep 10
+        run: ./scripts/test.sh sleep 2
 
   # Scenario: Job that only runs on PRs (e.g., quick linting, or checks not needed for merge)
   pr-exclusive:
@@ -47,7 +46,7 @@ jobs:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
       - name: Run Flaky Test
         # Change 'pass' to 'flaky' to simulate flakiness
-        run: ./scripts/test.sh flaky
+        run: ./scripts/test.sh pass
 
   # Scenario: Semantic Conflict Simulation
   # This job checks a version file. If two PRs change it incompatibly, this fails.
