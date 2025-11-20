@@ -5,7 +5,6 @@ on:
   pull_request:
     branches: [main]
   merge_group:
-    branches: [main]
 
 jobs:
   unit-test:
@@ -22,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
       - name: Run Expensive Test
-        run: ./scripts/test.sh sleep 10
+        run: ./scripts/test.sh sleep 2
 
   # Scenario: Job that only runs on PRs (e.g., quick linting, or checks not needed for merge)
   pr-exclusive:
