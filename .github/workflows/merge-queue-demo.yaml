@@ -1,0 +1,64 @@
+---
+name: Merge Queue Demo
+
+on:
+  pull_request:
+    branches: [main]
+  merge_group:
+    types: [checks_requested]
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Run Unit Test
+        run: ./scripts/test.sh
+
+  # Scenario: Job that only runs in the Merge Queue (e.g., expensive integration tests)
+  merge-queue-exclusive:
+    if: github.event_name == 'merge_group'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Run Expensive Test
+        run: ./scripts/test.sh sleep 10
+
+  # Scenario: Job that only runs on PRs (e.g., quick linting, or checks not needed for merge)
+  pr-exclusive:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Run Quick Check
+        run: ./scripts/test.sh
+
+  integration-test:
+    runs-on: ubuntu-latest
+    needs: unit-test
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Run Integration Test
+        run: ./scripts/test.sh
+
+  flaky-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Run Flaky Test
+        # Change 'pass' to 'flaky' to simulate flakiness
+        run: ./scripts/test.sh pass
+
+  # Scenario: Semantic Conflict Simulation
+  # This job checks a version file. If two PRs change it incompatibly, this fails.
+  semantic-conflict-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
+      - name: Check Version Compatibility
+        run: |
+          if [ -f scripts/version.txt ]; then
+            cat scripts/version.txt
+          else
+            echo "No version file found."
+          fi
